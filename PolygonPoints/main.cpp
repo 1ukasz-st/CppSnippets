@@ -75,7 +75,7 @@ vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all g
         double y1 = getY(edge_a,x);
         double y2 = getY(edge_b,x);
         if(y2<y1){ swap(y1,y2); }
-        for(int y=ceil(y1);y<=floor(y2);++y){ // handle normal edges (ironically, most important part took the least code...)
+        for(int y=ceil(y1);y<=floor(y2);++y){ 
             points.push_back({x,y});
         }
     }
