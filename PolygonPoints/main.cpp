@@ -22,7 +22,7 @@ void polar_sort(vector<pair<int,int>> &polygon){ // polar sort for a group of po
     });
 }
 
-vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all grid points (intered coords) inside a convex polygon. OK for some non-convex too but not all
+vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all grid points (integer coords) inside a convex polygon. OK for some non-convex too but not all
     polar_sort(polygon); 
     vector<vector<int>> edges; // an edge is here an array {x1,y1,x2,y2}
     vector<pair<int,int>> points;
