@@ -32,7 +32,7 @@ vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all g
         if(edge[0]==edge[2]){    // skip vertical lines 
             continue;
         }
-        if(polygon[u].first>polygon[v].first){   // make it so that the firts vertex in an edge is always the leftmost one
+        if(polygon[u].first>polygon[v].first){   // make it so that the first vertex in an edge is always the leftmost one
             swap(edge[0],edge[2]);
             swap(edge[1],edge[3]);
         }
