@@ -24,81 +24,53 @@ void polar_sort(vector<pair<int,int>> &polygon){ // polar sort for a group of po
 
 vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all grid points (intered coords) inside a convex polygon. OK for some non-convex too but not all
     polar_sort(polygon); 
-    vector<pair<pair<int,int>,pair<int,int>>> edges;
+    vector<vector<int>> edges; // an edge is here an array {x1,y1,x2,y2}
+    vector<pair<int,int>> points;
     for(int u=0;u<polygon.size();++u){
         int v = (u+1)%polygon.size();
-        if(polygon[u].first<=polygon[v].first){   // make it so that the firts vertex in an edge is always the leftmost one
-            edges.push_back({polygon[u],polygon[v]});
-        }else{
-            edges.push_back({polygon[v],polygon[u]});
-        }
-    }
-    sort(edges.begin(),edges.end()); // sort by x coordinate of first (leftmost) vertex of the edge. this also happens to be std's default sorting
-    reverse(edges.begin(),edges.end()); // reverse vector so that the last element is the leftmost (for easier line sweeping algorithm)
-    pair<pair<int,int>,pair<int,int>> edge_a,edge_b;
-    edge_a = edges.back();
-    edges.pop_back();
-    edge_b = edges.back();
-    edges.pop_back();
-    vector<pair<int,int>> points;
-    auto getY = [](pair<pair<int,int>,pair<int,int>> seg, int x){  // given a 2D segment and an X coordinate, return the point on this segment that has this X coord.
-            double x1 = seg.first.first;
-            double y1 = seg.first.second;
-            double x2 = seg.second.first;
-            double y2 = seg.second.second;
-            return y1 + (x - x1) * (y2 - y1) / (x2 - x1);
-        };
-    for(int x = polygon[0].first;;++x){ // line sweep algorithm
-        bool stop = false;
-        while(x>edge_a.second.first){ // remove outdated edges
-            if(edges.empty()){
-                stop = true;
-                break;
-            }
-            edge_a = edges.back();
-            edges.pop_back();
-        }
-        while(x>edge_b.second.first){ // remove outdated edges
-            if(edges.empty()){
-                stop = true;
-                break;
-            }
-            edge_b = edges.back();
-            edges.pop_back();
-        }
-        if(stop){break;}
-        bool was_vert = false;
-        while(edge_a.first.first == edge_a.second.first){ // handle vertical edges
-            was_vert=true;
-            int y1 = min(edge_a.first.second,edge_a.second.second), y2 =  max(edge_a.first.second,edge_a.second.second);
-            for(int y=y1;y<=y2;++y){
-                points.push_back({x,y});
-            }
-            if(edges.empty()){
-                edge_a = {{-1,-1},{-1,-1}};
-                break;
-            }
-            edge_a = edges.back();
-            edges.pop_back();
-        }
-        while(edge_b.first.first == edge_b.second.first){ // handle vertical edges
-            was_vert=true;
-            int y1 = min(edge_b.first.second,edge_b.second.second), y2 =  max(edge_b.first.second,edge_b.second.second);
-            for(int y=y1;y<=y2;++y){
-                points.push_back({x,y});
-            }
-            if(edges.empty()){
-                edge_b = {{-1,-1},{-1,-1}};
-                break;
-            }
-            edge_b = edges.back();
-            edges.pop_back();
-        }
-        if(was_vert){ // if vertcal edges were handles in this turn, go to the next turn
+        vector<int> edge({polygon[u].first,polygon[u].second,polygon[v].first,polygon[v].second});
+        if(edge[0]==edge[2]){    // skip vertical lines 
             continue;
         }
-        if(edge_b.first.first == -1){ // stop if no more edges
-            break;
+        if(polygon[u].first>polygon[v].first){   // make it so that the firts vertex in an edge is always the leftmost one
+            swap(edge[0],edge[2]);
+            swap(edge[1],edge[3]);
+        }
+        edges.push_back(edge);
+    }
+    sort(edges.begin(),edges.end(),[](vector<int> a, vector<int> b){
+        if(a[0] == b[0]){
+            if(a[2]==b[2]){
+                return make_pair(a[1],a[3]) < make_pair(b[1],b[3]);
+            }
+            return a[2] < b[2];
+        }
+        return a[0] < b[0];
+    }); // sort by x coordinate of first (leftmost) vertex of the edge, and then by x coordinate of second vertex, then by y coords.
+    reverse(edges.begin(),edges.end()); // reverse vector so that the last element is the leftmost (for easier line sweeping algorithm)
+    
+    auto getY = [](vector<int> seg, int x){  // given a 2D segment and an X coordinate, return the point on this segment that has this X coord.
+            double x1 = seg[0];
+            double y1 = seg[1];
+            double x2 = seg[2];
+            double y2 = seg[3];
+            return y1 + (x - x1) * (y2 - y1) / (x2 - x1);
+        };
+    vector<int> edge_a({-1e9,-1e9,-1e9,-1e9}), edge_b({-1e9,-1e9,-1e9,-1e9});
+    for(int x = polygon[0].first;;++x){ // line sweep algorithm
+        while(x>edge_a[2]){ // remove outdated edges
+            if(edges.empty()){
+                return points;
+            }
+            edge_a = edges.back();
+            edges.pop_back();
+        }
+        while(x>edge_b[2]){ // remove outdated edges
+            if(edges.empty()){
+                return points;
+            }
+            edge_b = edges.back();
+            edges.pop_back();
         }
         double y1 = getY(edge_a,x);
         double y2 = getY(edge_b,x);
@@ -112,7 +84,7 @@ vector<pair<int,int>> getPoints(vector<pair<int,int>> polygon){ // Returns all g
 
 int main(){
 
-    vector<pair<int,int>> test_poly({{-4,-4},{-4,4},{2,4},{-1,-2},{-2,6}});//({{2,2},{0,-1},{3,5},{-4,-2},{-4,4},{1,6},{-5,1}});
+    vector<pair<int,int>> test_poly({{-4,-4},{-4,4},{4,4},{4,-4}});//({{2,2},{0,-1},{3,5},{-4,-2},{-4,4},{1,6},{-5,1}});
     polar_sort(test_poly);
     for(auto [x,y] : test_poly){
         cout<<x<<" "<<y<<endl;  
