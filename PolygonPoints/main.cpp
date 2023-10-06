@@ -5,8 +5,6 @@
 #include <cmath>
 #include <utility>
 
-const int ninf = -1000000000; // Constant for negative infinity
-
 void polar_sort(std::vector<std::pair<int, int>> &polygon) {
     int ref_ind = 0;
     for (int i = 1; i < polygon.size(); ++i) {
@@ -27,6 +25,7 @@ void polar_sort(std::vector<std::pair<int, int>> &polygon) {
 }
 
 std::vector<std::pair<int, int>> getPoints(std::vector<std::pair<int, int>> polygon) {
+    const int ninf = -1000000000; // Constant for negative infinity. Only relevant in this function.
     polar_sort(polygon);
     std::vector<std::vector<int>> edges; // an edge is here an array {x1, y1, x2, y2}
     std::vector<std::pair<int, int>> points;
