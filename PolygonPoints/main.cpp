@@ -28,7 +28,7 @@ std::vector<std::pair<int, int>> getPoints(std::vector<std::pair<int, int>> poly
     const int ninf = -1000000000; // Constant for negative infinity. Only relevant in this function.
     polar_sort(polygon);
     std::vector<std::vector<int>> edges; // an edge is here an array {x1, y1, x2, y2}
-    std::vector<std::pair<int, int>> points;
+    std::vector<std::pair<int, int>> points; // result
     for (int u = 0; u < polygon.size(); ++u) {
         int v = (u + 1) % polygon.size();
         std::vector<int> edge({polygon[u].first, polygon[u].second, polygon[v].first, polygon[v].second});
@@ -49,7 +49,7 @@ std::vector<std::pair<int, int>> getPoints(std::vector<std::pair<int, int>> poly
             return a[2] < b[2];
         }
         return a[0] < b[0];
-    }); // sort by x coordinate of first (leftmost) vertex of the edge, and then by x coordinate of second vertex, then by y coords.
+    }); // sort by x coordinate of first (leftmost) vertex of the edge, and then by x coordinate of second vertex, then by y coords. X coordinate matters most in this algorithm.
     std::reverse(edges.begin(), edges.end()); // reverse vector so that the last element is the leftmost (for easier line sweeping algorithm)
 
     auto getY = [](std::vector<int> seg, int x) {  // given a 2D segment and an X coordinate, return the Y coord. of the only point that has this X coord AND lies on this segment.
@@ -60,15 +60,15 @@ std::vector<std::pair<int, int>> getPoints(std::vector<std::pair<int, int>> poly
         return y1 + (x - x1) * (y2 - y1) / (x2 - x1);
     };
     std::vector<int> edge_a({ninf, ninf, ninf, ninf}), edge_b({ninf, ninf, ninf, ninf});
-    for (int x = polygon[0].first;; ++x) { // line sweep algorithm
-        while (x > edge_a[2]) { // remove outdated edges and get current edge A
+    for (int x = polygon[0].first;; ++x) { // line sweep algorithm. For each reasonable X coordinate, we find all grid points that have this X coord. and lie inside the polygon
+        while (x > edge_a[2]) { // remove outdated edges and find current edge A
             if (edges.empty()) {
                 return points;
             }
             edge_a = edges.back();
             edges.pop_back();
         }
-        while (x > edge_b[2]) { // remove outdated edges and get current edge B
+        while (x > edge_b[2]) { // remove outdated edges and find current edge B
             if (edges.empty()) {
                 return points;
             }
