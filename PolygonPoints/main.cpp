@@ -24,7 +24,7 @@ void polar_sort(std::vector<std::pair<int, int>> &polygon) {
     });
 }
 
-std::vector<std::pair<int, int>> getPoints(std::vector<std::pair<int, int>> polygon) {
+std::vector<std::pair<int, int>> getPolygonGridPoints(std::vector<std::pair<int, int>> polygon) {
     const int ninf = -1000000000; // Constant for negative infinity. Only relevant in this function.
     polar_sort(polygon);
     std::vector<std::vector<int>> edges; // an edge is here an array {x1, y1, x2, y2}
