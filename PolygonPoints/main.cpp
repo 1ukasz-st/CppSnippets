@@ -95,7 +95,7 @@ int main() {
         std::cout << x << " " << y << std::endl;
     }
     std::cout << std::endl;
-    std::vector<std::pair<int, int>> pts = getPoints(test_poly);
+    std::vector<std::pair<int, int>> pts = getPolygonGridPoints(test_poly);
     for (auto [x, y] : pts) {
         std::cout << x << "," << y << std::endl;
     }
