@@ -4,17 +4,17 @@
 		{
 			"type": "shell",
 			"label": "Compile C++",
-			"command": "g++ -o '${fileDirname}\\${fileBasenameNoExtension}.exe' '${file}' -std=c++17 -O3 -Wno-narrowing",
+			"command": "g++ -o '${fileDirname}/${fileBasenameNoExtension}.exe' '${file}' -std=c++17 -O3 -Wno-narrowing",
 		},
 		{
 			"type": "shell",
 			"label": "Run C++",
-			"command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+			"command": "${fileDirname}/${fileBasenameNoExtension}.exe",
 		},
 		{
 			"type": "shell",
 			"label": "Run Python",
-			"command": "python '${fileDirname}\\${fileBasenameNoExtension}.py'",
+			"command": "python3 '${fileDirname}/${fileBasenameNoExtension}.py'",
 		},
 	]
 }

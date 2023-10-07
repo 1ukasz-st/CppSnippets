@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <utility>
+#include <fstream>
 
 void polar_sort(std::vector<std::pair<int, int>> &polygon) {
     int ref_ind = 0;
@@ -89,15 +90,17 @@ std::vector<std::pair<int, int>> getPolygonGridPoints(std::vector<std::pair<int,
 
 int main() {
 
-    std::vector<std::pair<int, int>> test_poly({{-4, -4}, {-4, 4}, {4, 4}, {4, -4}});
+    std::ofstream out("PolygonPoints/res.txt");
+
+    std::vector<std::pair<int, int>> test_poly({{-250,-166},{0,0},{86,0}});
     polar_sort(test_poly);
+    out<<test_poly.size()<<std::endl;
     for (auto [x, y] : test_poly) {
-        std::cout << x << " " << y << std::endl;
+        out << x << " " << y << std::endl;
     }
-    std::cout << std::endl;
     std::vector<std::pair<int, int>> pts = getPolygonGridPoints(test_poly);
     for (auto [x, y] : pts) {
-        std::cout << x << "," << y << std::endl;
+        out << x << " " << y << std::endl;
     }
     return 0;
 }
